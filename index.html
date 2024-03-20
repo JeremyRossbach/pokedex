@@ -9,10 +9,14 @@
     <script src="script.js"></script>
 </head>
 
-<body onload="loadPokemon()">
-    <div id="pokemon-cards"></div>
+<body onload="init()">
+    <div class="center">
+        <div id="pokemon-cards"></div>
 
-    <div id="pokemon-info"></div>
+        <div id="pokemon-info"></div>
+
+        <button id="loadButton" onclick="loadMorePokemons()">Mehr Pokémon laden</button>
+    </div>
 </body>
 
 </html>

@@ -7,7 +7,8 @@ body {
 
 .center {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 #pokemon-cards {
@@ -21,8 +22,12 @@ body {
     padding: 16px;
     margin: 16px;
     border-radius: 16px;
-    background-color: rgb(71, 209, 177);
     cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.cardContent:hover {
+    transform: scale(1.03);
 }
 
 #header {
@@ -37,10 +42,10 @@ h1 {
 
 h2 {
     margin: 0;
-    margin-bottom: 8px;
+    /* margin-bottom: 8px; */
 }
 
-#type {
+.type {
     text-align: center;
     padding-inline: 16px;
     margin-top: 8px;
@@ -166,5 +171,17 @@ p {
     color: white;
     border: 0;
     background-color: rgba(0, 0, 0, 0);
+    cursor: pointer;
+}
+
+#loadButton {
+    width: 25%;
+    margin-top: 32px;
+    margin-bottom: 32px;
+    padding: 8px;
+    border: 0;
+    border-radius: 8px;
+    background-color: rgb(47,167,214);
+    color: white;
     cursor: pointer;
 }
