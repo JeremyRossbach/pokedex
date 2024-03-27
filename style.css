@@ -5,7 +5,30 @@ body {
     font-family: sans-serif;
 }
 
-.center {
+.bg-body-tertiary {
+    position: fixed;
+    z-index: 999;
+    right: 0;
+    left: 0;
+    background-color: rgb(255, 255, 255) !important;
+}
+
+#logo {
+    width: 30px;
+    height: 30px;
+    margin-right: 4px;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+
+.form-control{
+    width: 140px;
+}
+
+#content {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -15,6 +38,7 @@ body {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    margin-top: 56px;
 }
 
 .cardContent {
@@ -42,7 +66,8 @@ h1 {
 
 h2 {
     margin: 0;
-    /* margin-bottom: 8px; */
+    font-size: 22px;
+    font-weight: 600;
 }
 
 .type {
@@ -55,6 +80,21 @@ h2 {
     background-color: rgba(255, 255, 255, 0.3);
 }
 
+.infoType {
+    text-align: center;
+    padding-inline: 16px;
+    margin-top: 8px;
+    margin-right: 4px;
+    height: 24px;
+    border-radius: 90px;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.infoTypes {
+    display: flex;
+    margin-left: 40px;
+}
+
 #imagePosition {
     display: flex;
     justify-content: space-around;
@@ -64,16 +104,26 @@ h2 {
     width: 100px;
 }
 
-#pokemon-info {}
+#pokemon-info {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+}
 
-#infoContent {
-    background-color: rgb(71, 209, 177);
+.infoContent {
+    width: 80%;
+    border-radius: 16px;
 }
 
 #infoHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 32px;
     padding-inline: 40px;
 }
 
@@ -89,10 +139,11 @@ h2 {
 }
 
 #infoCard {
-    margin-top: 250px;
     padding: 40px;
     border-top-left-radius: 32px;
     border-top-right-radius: 32px;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
     background-color: white;
     color: black;
 }
@@ -107,7 +158,7 @@ h2 {
     color: black;
     text-decoration: underline;
     text-decoration-thickness: 4px;
-    text-decoration-color: rgb(141,152,227);
+    text-decoration-color: rgb(141, 152, 227);
 }
 
 #categoryContent {
@@ -125,7 +176,8 @@ h2 {
     box-shadow: 5px 5px 15px -8px #000000;
 }
 
-#height, #weight {
+#height,
+#weight {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -139,30 +191,8 @@ p {
     color: rgb(160, 160, 160);
 }
 
-.mb-24 {
-    margin-bottom: 24px;
-}
-
-.display-flex {
-    display: flex;
-    justify-content: center;
-}
-
 .w-124 {
     width: 124px;
-}
-
-.ml-16 {
-    margin-left: 16px;
-}
-
-.jc-end {
-    display: flex;
-    justify-content: end;
-}
-
-.mt-32 {
-    margin-top: 32px;
 }
 
 #xButton {
@@ -175,13 +205,48 @@ p {
 }
 
 #loadButton {
-    width: 25%;
     margin-top: 32px;
     margin-bottom: 32px;
     padding: 8px;
     border: 0;
     border-radius: 8px;
-    background-color: rgb(47,167,214);
+    background-color: rgb(47, 167, 214);
     color: white;
     cursor: pointer;
+}
+
+.infoImage {
+    width: 200px;
+}
+
+.previousNextButtons {
+    border: 0;
+    background-color: #00000000;
+    cursor: pointer;
+}
+
+.imageAndButtons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-inline: 32px;
+}
+
+.progessBar {
+    height: 4px;
+    width: 150px;
+}
+
+@media (max-width: 400px) {
+    h3 {
+        font-size: 20px;
+    }
+
+    #infoCard {
+        padding-inline: 24px;
+    }
+
+    #categoryContent {
+        font-size: 15px;
+    }
 }

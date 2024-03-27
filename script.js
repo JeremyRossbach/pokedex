@@ -1,5 +1,26 @@
 const MAIN_URL = 'https://pokeapi.co/api/v2/pokemon/';
-let numberOfPokemons = 25;
+const allPokemon = [];
+const typeColors = {
+    grass: 'rgb(72,208,175)',
+    fire: 'rgb(251,108,108)',
+    water: 'rgb(117,189,253)',
+    normal: 'rgb(187,187,170)',
+    electric: 'rgb(254,206,74)',
+    ice: 'rgb(116,207,192)',
+    fighting: 'rgb(186,85,68)',
+    poison: 'rgb(149,83,204)',
+    ground: 'rgb(166,116,57)',
+    bug: 'rgb(146,193,42)',
+    flying: 'rgb(150,202,254)',
+    rock: 'rgb(187,170,102)',
+    psychic: 'rgb(255,98,128)',
+    ghost: 'rgb(110,67,111)',
+    dragon: 'rgb(85,112,189)',
+    steel: 'rgb(170,170,187)',
+    fairy: 'rgb(236,142,230)',
+    dark: 'rgb(78,68,69)'
+};
+let numberOfPokemon = 25;
 
 
 async function init() {
@@ -8,22 +29,23 @@ async function init() {
 
 
 async function loadPokemon() {
-    for (let i = 1; i < numberOfPokemons; i++) {
+    for (let i = 1; i < numberOfPokemon; i++) {
         let url = MAIN_URL + `${i}`;
         let response = await fetch(url);
         currentPokemon = await response.json();
+        allPokemon.push(currentPokemon);
 
         renderPokemonCard(i, currentPokemon);
-        renderPokemonType(i, currentPokemon);
+        renderPokemonCardType(i, currentPokemon);
         renderPokemonCardColor(i, currentPokemon);
 
         console.log(i, currentPokemon); // nur zur Orientierung !!!
     }
 }
 
-
-function loadMorePokemons() {
-    numberOfPokemons += 24;
+/* beim laden neuer Pokemon, bleibt der Inhalt des Arrays bestehen und dupliziert sich + 25 */
+function loadMorePokemon() {
+    numberOfPokemon += 24;
 
     document.getElementById('pokemon-cards').innerHTML = '';
 
@@ -50,18 +72,20 @@ function renderPokemonCard(i, currentPokemon) {
 }
 
 
-function renderPokemonType(i, currentPokemon) {
+function renderPokemonCardType(i, currentPokemon) {
+    let type1 = currentPokemon['types'][0]['type']['name'];
     let types = document.getElementById(`types${i}`);
 
     for (let j = 0; j < currentPokemon['types'].length; j++) {
         if (currentPokemon['types'][1] === undefined) {
-            types.innerHTML = `
-                <div id="type${i}" class="type">${currentPokemon['types'][0]['type']['name']}</div>
+            types.innerHTML = /* html */`
+                <div id="type${i}" class="type">${type1}</div>
             `;
         } else {
-            types.innerHTML = `
-                <div id="type${i}" class="type">${currentPokemon['types'][0]['type']['name']}</div>
-                <div id="type${i}" class="type">${currentPokemon['types'][1]['type']['name']}</div>
+            let type2 = currentPokemon['types'][1]['type']['name'];
+            types.innerHTML = /* html */`
+                <div id="type${i}" class="type">${type1}</div>
+                <div id="type${i}" class="type">${type2}</div>
             `;
         }
     }
@@ -71,89 +95,38 @@ function renderPokemonType(i, currentPokemon) {
 function renderPokemonCardColor(i, currentPokemon) {
     let cardContent = document.getElementById(`cardContent${i}`);
 
-    if (currentPokemon['types'][0]['type']['name'] === 'grass') {
-        cardContent.style.backgroundColor = 'rgb(72,208,175)';
-    } 
-    if (currentPokemon['types'][0]['type']['name'] === 'fire') {
-        cardContent.style.backgroundColor = 'rgb(251,108,108)';
-    }
-    if (currentPokemon['types'][0]['type']['name'] === 'water') {
-        cardContent.style.backgroundColor = 'rgb(117,189,253)';
-    }
-    if (currentPokemon['types'][0]['type']['name'] === 'normal') {
-        cardContent.style.backgroundColor = 'rgb(187,187,170)';
-    }
-    if (currentPokemon['types'][0]['type']['name'] === 'electric') {
-        cardContent.style.backgroundColor = 'rgb(254,206,74)';
-    }
-    if (currentPokemon['types'][0]['type']['name'] === 'ice') {
-        cardContent.style.backgroundColor = 'rgb(116,207,192)';
-    }
-    if (currentPokemon['types'][0]['type']['name'] === 'fighting') {
-        cardContent.style.backgroundColor = 'rgb(186,85,68)';
-    }
-    if (currentPokemon['types'][0]['type']['name'] === 'poison') {
-        cardContent.style.backgroundColor = 'rgb(149,83,204)';
-    }
-    if (currentPokemon['types'][0]['type']['name'] === 'ground') {
-        cardContent.style.backgroundColor = 'rgb(166,116,57)';
-    }
-    if (currentPokemon['types'][0]['type']['name'] === 'bug') {
-        cardContent.style.backgroundColor = 'rgb(146,193,42)';
-    }
-    if (currentPokemon['types'][0]['type']['name'] === 'flying') {
-        cardContent.style.backgroundColor = 'rgb(150,202,254)';
-    }
-    if (currentPokemon['types'][0]['type']['name'] === 'rock') {
-        cardContent.style.backgroundColor = 'rgb(187,170,102)';
-    }
-    if (currentPokemon['types'][0]['type']['name'] === 'psychic') {
-        cardContent.style.backgroundColor = 'rgb(255,98,128)';
-    }
-    if (currentPokemon['types'][0]['type']['name'] === 'ghost') {
-        cardContent.style.backgroundColor = 'rgb(110,67,111)';
-    }
-    if (currentPokemon['types'][0]['type']['name'] === 'dragon') {
-        cardContent.style.backgroundColor = 'rgb(85,112,189)';
-    }
-    if (currentPokemon['types'][0]['type']['name'] === 'steel') {
-        cardContent.style.backgroundColor = 'rgb(170,170,187)';
-    }
-    if (currentPokemon['types'][0]['type']['name'] === 'fairy') {
-        cardContent.style.backgroundColor = 'rgb(236,142,230)';
-    }
-    if (currentPokemon['types'][0]['type']['name'] === 'stellar') {
-        cardContent.style.backgroundColor = 'rgb(78,68,69)';
+    const type = currentPokemon['types'][0]['type']['name'];
+    if (typeColors[type]) {
+        cardContent.style.backgroundColor = typeColors[type];
     }
 }
 
-
-function showPokemonInfo(i, currentPokemon) {
-    document.getElementById('pokemon-cards').style.display = 'none';
-
+/* richtiges Pokemon (ab #25), TypeColor und Type fehlen noch */
+function showPokemonInfo(i) {
     let pokemonInfo = document.getElementById('pokemon-info');
+    document.body.style.overflow = 'hidden';
+    pokemonInfo.style.display = 'flex';
 
-    pokemonInfo.innerHTML += /* html */`
-            <div id="infoContent${i}">
-                <button id=xButton onclick="goBack()">x</button>
+    pokemonInfo.innerHTML = /* html */`
+            <div onclick="dontClosePokemonInfo(event)" id="infoContent${i}" class="infoContent">
 
-                <div id="infoHeader">
-                    <h1>${currentPokemon['name']}</h1>
-                    <b>#${currentPokemon['order']}</b>
+                <div id="infoHeader">                    
+                    <h1>${allPokemon[i - 1]['name']}</h1>
+                    <b>#${allPokemon[i - 1]['id']}</b>
                 </div>
 
-                <div id="infoTypes">
-                    <div id="type">${currentPokemon['types'][0]['type']['name']}</div>
-                </div>
+                <div id="infoTypes${i}" class="infoTypes"></div>
 
-                <div class="center">
-                    <img src="${currentPokemon['sprites']['front_default']}">
+                <div class="imageAndButtons">
+                    <button onclick="previousPokemon(${i})" id="previousButton" class="previousNextButtons"><img src="./img/arrow-left.png"></button>
+                    <img class="infoImage" src="${allPokemon[i - 1]['sprites']['front_default']}">
+                    <button onclick="nextPokemon(${i})" id="nextButton" class="previousNextButtons"><img src="./img/arrow-right.png"></button>
                 </div>
 
                 <div id="infoCard">
                     <div id="categories">
-                        <h3 id="about" class="cursor-pointer" onclick="openAbout()">About</h3>
-                        <h3 id="stats" class="cursor-pointer" onclick="openStats()">Base Stats</h3>
+                        <h3 onclick="openAbout(${i})" id="about" class="cursor-pointer">About</h3>
+                        <h3 onclick="openStats(${i})" id="stats" class="cursor-pointer">Base Stats</h3>
                     </div>
 
                     <div id="categoryContent">
@@ -162,69 +135,158 @@ function showPokemonInfo(i, currentPokemon) {
                 </div>
             </div>
         `;
-    openAbout();
+    renderPokemonInfoCardType(i);
+    renderPokemonInfoCardColor(i);
+    openAbout(i);
 }
 
 
-function openAbout() {
+function renderPokemonInfoCardType(i) {
+    let types = document.getElementById(`infoTypes${i}`);
+
+    for (let n = 0; n < allPokemon[n]['types'].length; n++) {
+        if (allPokemon[i - 1]['types'][1] === undefined) {
+            types.innerHTML = /* html */`
+                <div id="type${i}" class="infoType">${allPokemon[i - 1]['types'][0]['type']['name']}</div>
+            `;
+        } else {
+            types.innerHTML = /* html */`
+                <div id="type${i}" class="infoType">${allPokemon[i - 1]['types'][0]['type']['name']}</div>
+                <div id="type${i}" class="infoType">${allPokemon[i - 1]['types'][1]['type']['name']}</div>
+            `;
+        }
+    }
+}
+
+
+function renderPokemonInfoCardColor(i) {
+    let infoContent = document.getElementById(`infoContent${i}`);
+
+    const type = allPokemon[i - 1]['types'][0]['type']['name'];
+    if (typeColors[type]) {
+        infoContent.style.backgroundColor = typeColors[type];
+    }
+}
+
+
+
+function openAbout(i) {
     document.getElementById('about').classList.add('onclick');
     document.getElementById('stats').classList.remove('onclick');
     let categoryContent = document.getElementById('categoryContent');
 
     categoryContent.innerHTML = '';
     categoryContent.innerHTML = /* html */ `
-            <p id = "description" class="mb-24">Lorem ipsum dolor sit amet consectetur adipisicing elit.Suscipit dolore maiores, qui quasi accusamus possimus magni aut consectetur harum, minus fugit cum laborum in eos magnam.Reiciendis dicta dolorem ad ?</p>
-                <div id="heightAndWeight">
-                    <div id="height">
-                        <p class="color-grey">Height</p>
-                        <p>${currentPokemon['height']}</p>
-                    </div>
-                    <div id="weight">
-                        <p class="color-grey">Weight</p>
-                        <p>${currentPokemon['weight']}</p>
-                    </div>
+        <p id="description" class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit.Suscipit dolore maiores, qui quasi accusamus possimus magni aut consectetur harum, minus fugit cum laborum in eos magnam.Reiciendis dicta dolorem ad ?</p>
+            <div id="heightAndWeight">
+                <div id="height">
+                    <p class="color-grey">Height</p>
+                    <p>${allPokemon[i - 1]['height']}</p>
                 </div>
-        `;
+                <div id="weight">
+                    <p class="color-grey">Weight</p>
+                    <p>${allPokemon[i - 1]['weight']}</p>
+                </div>
+            </div>
+    `;
 }
 
 
-function openStats() {
+function openStats(i) {
     document.getElementById('stats').classList.add('onclick');
     document.getElementById('about').classList.remove('onclick');
     let categoryContent = document.getElementById('categoryContent');
 
-    categoryContent.innerHTML = "";
-    categoryContent.innerHTML = /* html */ `
-            < div id = "" >
-            <div class="display-flex mt-32">
-                <div class="w-124 mb-24">${currentPokemon['stats'][0]['stat']['name']}</div>
-                <div class="w-124 mb-24 jc-end">${currentPokemon["stats"][0]["base_stat"]}</div>
+    categoryContent.innerHTML = '';
+
+    for (let k = 0; k < allPokemon[k]['stats'].length; k++) {
+        categoryContent.innerHTML += /* html */`
+            <div class="d-flex justify-content-center align-items-center mt-4">
+                <div class="w-124">${allPokemon[i - 1]['stats'][k]['stat']['name']}</div>
+                <div class="mx-3">${allPokemon[i - 1]['stats'][k]['base_stat']}</div>
+                <div class="progress progessBar" role="progressbar" aria-label="Example 1px high">
+                    <div class="progress-bar" style="width: ${allPokemon[i - 1]['stats'][k]['base_stat']}px"></div>
+                </div>
             </div>
-            <div class="display-flex">
-                <div class="w-124 mb-24">${currentPokemon['stats'][1]['stat']['name']}</div>
-                <div class="w-124 jc-end">${currentPokemon['stats'][1]['base_stat']}</div>
-            </div>
-            <div class="display-flex">
-                <div class="w-124 mb-24">${currentPokemon['stats'][2]['stat']['name']}</div>
-                <div class="w-124 mb-24 jc-end">${currentPokemon['stats'][2]['base_stat']}</div>
-            </div>
-            <div class="display-flex">
-                <div class="w-124 mb-24">${currentPokemon['stat'][3]['stat']['name']}</div>
-                <div class="w-124 mb-24 jc-end">${currentPokemon['stats'][3]['base_stat']}</div>
-            </div>
-            <div class="display-flex">
-                <div class="w-124 mb-24">${currentPokemon['stats'][4]['stat']['name']}</div>
-                <div class="w-124 mb-24 jc-end">${currentPokemon['stats'][4]['base_stat']}</div>
-            </div>
-            <div class="display-flex">
-                <div class="w-124 mb-24">${currentPokemon['stats'][5]['stat']['name']}</div>
-                <div class="w-124 mb-24 jc-end">${currentPokemon['stats'][5]['base_stat']}</div>
-            </div>
-        </div >
-            `;
+        `;
+    }
 }
 
 
-function goBack() {
-    location.reload();
+function closePokemonInfo() {
+    document.body.style.overflow = '';
+    document.getElementById('pokemon-info').style.display = 'none';
+}
+
+
+function dontClosePokemonInfo(event) {
+    event.stopPropagation();
+}
+
+/* if-else-Abfrage fehlt noch */
+function previousPokemon(i) {
+    showPokemonInfo(i - 1);
+}
+
+
+function nextPokemon(i) {
+    showPokemonInfo(i + 1);
+}
+
+
+function filterNames() {
+    let search = document.getElementById('searchForPokemon').value;
+    search = search.toLowerCase();
+
+    let pokemonCard = document.getElementById('pokemon-cards');
+    pokemonCard.innerHTML = '';
+
+    for (let l = 0; l < allPokemon.length; l++) {
+        let pokemon = allPokemon[l];
+        if (pokemon['name'].toLowerCase().includes(search)) {
+            pokemonCard.innerHTML += /* html */ `
+                <div id="cardContent${l}" class="cardContent" onclick="showPokemonInfo(${l} + 1)">
+                    <div id="header">
+                        <h2>${pokemon['name']}</h2> 
+                        <b>#${pokemon['id']}</b>
+                    </div>
+                
+                    <div id="imagePosition">
+                        <div id="types${l}"></div>
+                        <img src="${pokemon['sprites']['front_default']}">
+                    </div>
+                </div>
+            `;
+            renderPokemonInfoType(l);
+            renderPokemonSearchedCardColor(l);
+        }
+    }
+}
+
+
+function renderPokemonInfoType(l) {
+    let types = document.getElementById(`types${l}`);
+
+    for (let m = 0; m < allPokemon[m]['types'].length; m++) {
+        if (allPokemon[l]['types'][1] === undefined) {
+            types.innerHTML = /* html */`
+                <div id="type${l}" class="type">${allPokemon[l]['types'][0]['type']['name']}</div>
+            `;
+        } else {
+            types.innerHTML = /* html */`
+                <div id="type${l}" class="type">${allPokemon[l]['types'][0]['type']['name']}</div>
+                <div id="type${l}" class="type">${allPokemon[l]['types'][1]['type']['name']}</div>
+            `;
+        }
+    }
+}
+
+
+function renderPokemonSearchedCardColor(l) {
+    let cardContent = document.getElementById(`cardContent${l}`);
+
+    const type = allPokemon[l]['types'][0]['type']['name'];
+    if (typeColors[type]) {
+        cardContent.style.backgroundColor = typeColors[type];
+    }
 }
