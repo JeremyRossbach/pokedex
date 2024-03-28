@@ -40,7 +40,12 @@ async function loadPokemon() {
     renderPokemonCard();
 }
 
-/* beim laden neuer Pokemon, bleibt der Inhalt des Arrays bestehen und dupliziert sich + 25 */
+
+function capitalizeFirstLetter(allPokemon) {
+    return allPokemon.charAt(0).toUpperCase() + allPokemon.slice(1);
+}
+
+
 function loadMorePokemon() {
     numberOfPokemon += 24;
 
@@ -55,20 +60,20 @@ function renderPokemonCard() {
 
     for (let o = 0; o < numberOfPokemon; o++) {
         pokemonCard.innerHTML += /* html */ `
-        <div id="cardContent${o}" class="cardContent" onclick="showPokemonInfo(${o})">
-            <div id="header">
-                <h2>${allPokemon[o]['name']}</h2> 
-                <b>#${allPokemon[o]['id']}</b>
+            <div id="cardContent${o}" class="cardContent" onclick="showPokemonInfo(${o})">
+                <div id="header">
+                    <h2>${capitalizeFirstLetter(allPokemon[o]['name'])}</h2> 
+                    <b>#${allPokemon[o]['id']}</b>
+                </div>
+            
+                <div id="imagePosition">
+                    <div id="types${o}"></div>
+                    <img src="${allPokemon[o]['sprites']['front_default']}">
+                </div>
             </div>
-        
-            <div id="imagePosition">
-                <div id="types${o}"></div>
-                <img src="${allPokemon[o]['sprites']['front_default']}">
-            </div>
-        </div>
-    `;
-    renderPokemonCardType(o);
-    renderPokemonCardColor(o);
+        `;
+        renderPokemonCardType(o);
+        renderPokemonCardColor(o);
     }
 }
 
@@ -79,12 +84,12 @@ function renderPokemonCardType(o) {
     for (let j = 0; j < allPokemon[o]['types'].length; j++) {
         if (allPokemon[o]['types'][1] === undefined) {
             types.innerHTML = /* html */`
-                <div id="type${o}" class="type">${allPokemon[o]['types'][0]['type']['name']}</div>
+                <div id="type${o}" class="type">${capitalizeFirstLetter(allPokemon[0]['types'][0]['type']['name'])}</div>
             `;
         } else {
             types.innerHTML = /* html */`
-                <div id="type${o}" class="type">${allPokemon[o]['types'][0]['type']['name']}</div>
-                <div id="type${o}" class="type">${allPokemon[o]['types'][1]['type']['name']}</div>
+                <div id="type${o}" class="type">${capitalizeFirstLetter(allPokemon[0]['types'][0]['type']['name'])}</div>
+                <div id="type${o}" class="type">${capitalizeFirstLetter(allPokemon[1]['types'][1]['type']['name'])}</div>
             `;
         }
     }
@@ -100,7 +105,7 @@ function renderPokemonCardColor(o) {
     }
 }
 
-/* richtiges Pokemon (ab #25), TypeColor und Type fehlen noch */
+
 function showPokemonInfo(o) {
     let pokemonInfo = document.getElementById('pokemon-info');
     document.getElementById('nav').style.display = 'none';
@@ -111,7 +116,7 @@ function showPokemonInfo(o) {
             <div onclick="dontClosePokemonInfo(event)" id="infoContent${o}" class="infoContent">
 
                 <div id="infoHeader">                    
-                    <h1>${allPokemon[o]['name']}</h1>
+                    <h1>${capitalizeFirstLetter(allPokemon[o]['name'])}</h1>
                     <b>#${allPokemon[o]['id']}</b>
                 </div>
 
@@ -147,12 +152,12 @@ function renderPokemonInfoCardType(o) {
     for (let n = 0; n < allPokemon[n]['types'].length; n++) {
         if (allPokemon[o]['types'][1] === undefined) {
             types.innerHTML = /* html */`
-                <div id="type${o}" class="infoType">${allPokemon[o]['types'][0]['type']['name']}</div>
+                <div id="type${o}" class="infoType">${capitalizeFirstLetter(allPokemon[o]['types'][0]['type']['name'])}</div>
             `;
         } else {
             types.innerHTML = /* html */`
-                <div id="type${o}" class="infoType">${allPokemon[o]['types'][0]['type']['name']}</div>
-                <div id="type${o}" class="infoType">${allPokemon[o]['types'][1]['type']['name']}</div>
+                <div id="type${o}" class="infoType">${capitalizeFirstLetter(allPokemon[o]['types'][0]['type']['name'])}</div>
+                <div id="type${o}" class="infoType">${capitalizeFirstLetter(allPokemon[o]['types'][1]['type']['name'])}</div>
             `;
         }
     }
@@ -202,7 +207,7 @@ function openStats(o) {
     for (let k = 0; k < allPokemon[o]['stats'].length; k++) {
         categoryContent.innerHTML += /* html */`
             <div class="d-flex justify-content-center align-items-center mt-4">
-                <div class="w-124">${allPokemon[o]['stats'][k]['stat']['name']}</div>
+                <div class="w-124">${capitalizeFirstLetter(allPokemon[o]['stats'][k]['stat']['name'])}</div>
                 <div class="mx-3">${allPokemon[o]['stats'][k]['base_stat']}</div>
                 <div class="progress progessBar" role="progressbar" aria-label="Example 1px high">
                     <div class="progress-bar" style="width: ${allPokemon[o]['stats'][k]['base_stat']}px"></div>
@@ -224,14 +229,22 @@ function dontClosePokemonInfo(event) {
     event.stopPropagation();
 }
 
-/* if-else-Abfrage fehlt noch */
+
 function previousPokemon(o) {
-    showPokemonInfo(o - 1);
+    if (o === 0) {
+        showPokemonInfo(239);
+    } else {
+        showPokemonInfo(o - 1);
+    }
 }
 
 
 function nextPokemon(o) {
-    showPokemonInfo(o + 1);
+    if (o === 239) {
+        showPokemonInfo(0);
+    } else {
+        showPokemonInfo(o + 1);
+    }
 }
 
 
