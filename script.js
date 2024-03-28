@@ -20,7 +20,7 @@ const typeColors = {
     fairy: 'rgb(236,142,230)',
     dark: 'rgb(78,68,69)'
 };
-let numberOfPokemon = 25;
+let numberOfPokemon = 24;
 
 
 async function init() {
@@ -29,18 +29,15 @@ async function init() {
 
 
 async function loadPokemon() {
-    for (let i = 1; i < numberOfPokemon; i++) {
+    for (let i = 1; i < 241; i++) {
         let url = MAIN_URL + `${i}`;
         let response = await fetch(url);
         currentPokemon = await response.json();
         allPokemon.push(currentPokemon);
 
-        renderPokemonCard(i, currentPokemon);
-        renderPokemonCardType(i, currentPokemon);
-        renderPokemonCardColor(i, currentPokemon);
-
         console.log(i, currentPokemon); // nur zur Orientierung !!!
     }
+    renderPokemonCard();
 }
 
 /* beim laden neuer Pokemon, bleibt der Inhalt des Arrays bestehen und dupliziert sich + 25 */
@@ -53,80 +50,83 @@ function loadMorePokemon() {
 }
 
 
-function renderPokemonCard(i, currentPokemon) {
+function renderPokemonCard() {
     let pokemonCard = document.getElementById('pokemon-cards');
 
-    pokemonCard.innerHTML += /* html */ `
-        <div id="cardContent${i}" class="cardContent" onclick="showPokemonInfo(${i})">
+    for (let o = 0; o < numberOfPokemon; o++) {
+        pokemonCard.innerHTML += /* html */ `
+        <div id="cardContent${o}" class="cardContent" onclick="showPokemonInfo(${o})">
             <div id="header">
-                <h2>${currentPokemon['name']}</h2> 
-                <b>#${currentPokemon['id']}</b>
+                <h2>${allPokemon[o]['name']}</h2> 
+                <b>#${allPokemon[o]['id']}</b>
             </div>
         
             <div id="imagePosition">
-                <div id="types${i}"></div>
-                <img src="${currentPokemon['sprites']['front_default']}">
+                <div id="types${o}"></div>
+                <img src="${allPokemon[o]['sprites']['front_default']}">
             </div>
         </div>
     `;
+    renderPokemonCardType(o);
+    renderPokemonCardColor(o);
+    }
 }
 
 
-function renderPokemonCardType(i, currentPokemon) {
-    let type1 = currentPokemon['types'][0]['type']['name'];
-    let types = document.getElementById(`types${i}`);
+function renderPokemonCardType(o) {
+    let types = document.getElementById(`types${o}`);
 
-    for (let j = 0; j < currentPokemon['types'].length; j++) {
-        if (currentPokemon['types'][1] === undefined) {
+    for (let j = 0; j < allPokemon[o]['types'].length; j++) {
+        if (allPokemon[o]['types'][1] === undefined) {
             types.innerHTML = /* html */`
-                <div id="type${i}" class="type">${type1}</div>
+                <div id="type${o}" class="type">${allPokemon[o]['types'][0]['type']['name']}</div>
             `;
         } else {
-            let type2 = currentPokemon['types'][1]['type']['name'];
             types.innerHTML = /* html */`
-                <div id="type${i}" class="type">${type1}</div>
-                <div id="type${i}" class="type">${type2}</div>
+                <div id="type${o}" class="type">${allPokemon[o]['types'][0]['type']['name']}</div>
+                <div id="type${o}" class="type">${allPokemon[o]['types'][1]['type']['name']}</div>
             `;
         }
     }
 }
 
 
-function renderPokemonCardColor(i, currentPokemon) {
-    let cardContent = document.getElementById(`cardContent${i}`);
+function renderPokemonCardColor(o) {
+    let cardContent = document.getElementById(`cardContent${o}`);
 
-    const type = currentPokemon['types'][0]['type']['name'];
+    const type = allPokemon[o]['types'][0]['type']['name'];
     if (typeColors[type]) {
         cardContent.style.backgroundColor = typeColors[type];
     }
 }
 
 /* richtiges Pokemon (ab #25), TypeColor und Type fehlen noch */
-function showPokemonInfo(i) {
+function showPokemonInfo(o) {
     let pokemonInfo = document.getElementById('pokemon-info');
+    document.getElementById('nav').style.display = 'none';
     document.body.style.overflow = 'hidden';
     pokemonInfo.style.display = 'flex';
 
     pokemonInfo.innerHTML = /* html */`
-            <div onclick="dontClosePokemonInfo(event)" id="infoContent${i}" class="infoContent">
+            <div onclick="dontClosePokemonInfo(event)" id="infoContent${o}" class="infoContent">
 
                 <div id="infoHeader">                    
-                    <h1>${allPokemon[i - 1]['name']}</h1>
-                    <b>#${allPokemon[i - 1]['id']}</b>
+                    <h1>${allPokemon[o]['name']}</h1>
+                    <b>#${allPokemon[o]['id']}</b>
                 </div>
 
-                <div id="infoTypes${i}" class="infoTypes"></div>
+                <div id="infoTypes${o}" class="infoTypes"></div>
 
                 <div class="imageAndButtons">
-                    <button onclick="previousPokemon(${i})" id="previousButton" class="previousNextButtons"><img src="./img/arrow-left.png"></button>
-                    <img class="infoImage" src="${allPokemon[i - 1]['sprites']['front_default']}">
-                    <button onclick="nextPokemon(${i})" id="nextButton" class="previousNextButtons"><img src="./img/arrow-right.png"></button>
+                    <button onclick="previousPokemon(${o})" id="previousButton" class="previousNextButtons"><img src="./img/arrow-left.png"></button>
+                    <img class="infoImage" src="${allPokemon[o]['sprites']['front_default']}">
+                    <button onclick="nextPokemon(${o})" id="nextButton" class="previousNextButtons"><img src="./img/arrow-right.png"></button>
                 </div>
 
                 <div id="infoCard">
                     <div id="categories">
-                        <h3 onclick="openAbout(${i})" id="about" class="cursor-pointer">About</h3>
-                        <h3 onclick="openStats(${i})" id="stats" class="cursor-pointer">Base Stats</h3>
+                        <h3 onclick="openAbout(${o})" id="about" class="cursor-pointer">About</h3>
+                        <h3 onclick="openStats(${o})" id="stats" class="cursor-pointer">Base Stats</h3>
                     </div>
 
                     <div id="categoryContent">
@@ -135,34 +135,34 @@ function showPokemonInfo(i) {
                 </div>
             </div>
         `;
-    renderPokemonInfoCardType(i);
-    renderPokemonInfoCardColor(i);
-    openAbout(i);
+    renderPokemonInfoCardType(o);
+    renderPokemonInfoCardColor(o);
+    openAbout(o);
 }
 
 
-function renderPokemonInfoCardType(i) {
-    let types = document.getElementById(`infoTypes${i}`);
+function renderPokemonInfoCardType(o) {
+    let types = document.getElementById(`infoTypes${o}`);
 
     for (let n = 0; n < allPokemon[n]['types'].length; n++) {
-        if (allPokemon[i - 1]['types'][1] === undefined) {
+        if (allPokemon[o]['types'][1] === undefined) {
             types.innerHTML = /* html */`
-                <div id="type${i}" class="infoType">${allPokemon[i - 1]['types'][0]['type']['name']}</div>
+                <div id="type${o}" class="infoType">${allPokemon[o]['types'][0]['type']['name']}</div>
             `;
         } else {
             types.innerHTML = /* html */`
-                <div id="type${i}" class="infoType">${allPokemon[i - 1]['types'][0]['type']['name']}</div>
-                <div id="type${i}" class="infoType">${allPokemon[i - 1]['types'][1]['type']['name']}</div>
+                <div id="type${o}" class="infoType">${allPokemon[o]['types'][0]['type']['name']}</div>
+                <div id="type${o}" class="infoType">${allPokemon[o]['types'][1]['type']['name']}</div>
             `;
         }
     }
 }
 
 
-function renderPokemonInfoCardColor(i) {
-    let infoContent = document.getElementById(`infoContent${i}`);
+function renderPokemonInfoCardColor(o) {
+    let infoContent = document.getElementById(`infoContent${o}`);
 
-    const type = allPokemon[i - 1]['types'][0]['type']['name'];
+    const type = allPokemon[o]['types'][0]['type']['name'];
     if (typeColors[type]) {
         infoContent.style.backgroundColor = typeColors[type];
     }
@@ -170,7 +170,7 @@ function renderPokemonInfoCardColor(i) {
 
 
 
-function openAbout(i) {
+function openAbout(o) {
     document.getElementById('about').classList.add('onclick');
     document.getElementById('stats').classList.remove('onclick');
     let categoryContent = document.getElementById('categoryContent');
@@ -181,31 +181,31 @@ function openAbout(i) {
             <div id="heightAndWeight">
                 <div id="height">
                     <p class="color-grey">Height</p>
-                    <p>${allPokemon[i - 1]['height']}</p>
+                    <p>${allPokemon[o]['height']}</p>
                 </div>
                 <div id="weight">
                     <p class="color-grey">Weight</p>
-                    <p>${allPokemon[i - 1]['weight']}</p>
+                    <p>${allPokemon[o]['weight']}</p>
                 </div>
             </div>
     `;
 }
 
 
-function openStats(i) {
+function openStats(o) {
     document.getElementById('stats').classList.add('onclick');
     document.getElementById('about').classList.remove('onclick');
     let categoryContent = document.getElementById('categoryContent');
 
     categoryContent.innerHTML = '';
 
-    for (let k = 0; k < allPokemon[k]['stats'].length; k++) {
+    for (let k = 0; k < allPokemon[o]['stats'].length; k++) {
         categoryContent.innerHTML += /* html */`
             <div class="d-flex justify-content-center align-items-center mt-4">
-                <div class="w-124">${allPokemon[i - 1]['stats'][k]['stat']['name']}</div>
-                <div class="mx-3">${allPokemon[i - 1]['stats'][k]['base_stat']}</div>
+                <div class="w-124">${allPokemon[o]['stats'][k]['stat']['name']}</div>
+                <div class="mx-3">${allPokemon[o]['stats'][k]['base_stat']}</div>
                 <div class="progress progessBar" role="progressbar" aria-label="Example 1px high">
-                    <div class="progress-bar" style="width: ${allPokemon[i - 1]['stats'][k]['base_stat']}px"></div>
+                    <div class="progress-bar" style="width: ${allPokemon[o]['stats'][k]['base_stat']}px"></div>
                 </div>
             </div>
         `;
@@ -215,6 +215,7 @@ function openStats(i) {
 
 function closePokemonInfo() {
     document.body.style.overflow = '';
+    document.getElementById('nav').style.display = 'flex';
     document.getElementById('pokemon-info').style.display = 'none';
 }
 
@@ -224,13 +225,13 @@ function dontClosePokemonInfo(event) {
 }
 
 /* if-else-Abfrage fehlt noch */
-function previousPokemon(i) {
-    showPokemonInfo(i - 1);
+function previousPokemon(o) {
+    showPokemonInfo(o - 1);
 }
 
 
-function nextPokemon(i) {
-    showPokemonInfo(i + 1);
+function nextPokemon(o) {
+    showPokemonInfo(o + 1);
 }
 
 
@@ -245,7 +246,7 @@ function filterNames() {
         let pokemon = allPokemon[l];
         if (pokemon['name'].toLowerCase().includes(search)) {
             pokemonCard.innerHTML += /* html */ `
-                <div id="cardContent${l}" class="cardContent" onclick="showPokemonInfo(${l} + 1)">
+                <div id="cardContent${l}" class="cardContent" onclick="showPokemonInfo(${l})">
                     <div id="header">
                         <h2>${pokemon['name']}</h2> 
                         <b>#${pokemon['id']}</b>
