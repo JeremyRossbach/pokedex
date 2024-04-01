@@ -37,7 +37,14 @@ async function loadPokemon() {
 
         console.log(i, currentPokemon); // nur zur Orientierung !!!
     }
+    showMainContent();
     renderPokemonCard();
+}
+
+
+function showMainContent() {
+    document.getElementById('mainContent').style.display = 'flex';
+    document.getElementById('loadingScreen').style.display = 'none';
 }
 
 
@@ -56,10 +63,18 @@ function loadMorePokemon() {
 
 
 function renderPokemonCard() {
+    for (let o = 0; o < numberOfPokemon; o++) {
+        pokemonCardContent(o);
+        renderPokemonCardType(o);
+        renderPokemonCardColor(o);
+    }
+}
+
+
+function pokemonCardContent(o) {
     let pokemonCard = document.getElementById('pokemon-cards');
 
-    for (let o = 0; o < numberOfPokemon; o++) {
-        pokemonCard.innerHTML += /* html */ `
+    pokemonCard.innerHTML += /* html */ `
             <div id="cardContent${o}" class="cardContent" onclick="showPokemonInfo(${o})">
                 <div id="header">
                     <h2>${capitalizeFirstLetter(allPokemon[o]['name'])}</h2> 
@@ -72,9 +87,6 @@ function renderPokemonCard() {
                 </div>
             </div>
         `;
-        renderPokemonCardType(o);
-        renderPokemonCardColor(o);
-    }
 }
 
 
@@ -84,12 +96,12 @@ function renderPokemonCardType(o) {
     for (let j = 0; j < allPokemon[o]['types'].length; j++) {
         if (allPokemon[o]['types'][1] === undefined) {
             types.innerHTML = /* html */`
-                <div id="type${o}" class="type">${capitalizeFirstLetter(allPokemon[0]['types'][0]['type']['name'])}</div>
+                <div id="type${o}" class="type">${capitalizeFirstLetter(allPokemon[o]['types'][0]['type']['name'])}</div>
             `;
         } else {
             types.innerHTML = /* html */`
-                <div id="type${o}" class="type">${capitalizeFirstLetter(allPokemon[0]['types'][0]['type']['name'])}</div>
-                <div id="type${o}" class="type">${capitalizeFirstLetter(allPokemon[1]['types'][1]['type']['name'])}</div>
+                <div id="type${o}" class="type">${capitalizeFirstLetter(allPokemon[o]['types'][0]['type']['name'])}</div>
+                <div id="type${o}" class="type">${capitalizeFirstLetter(allPokemon[o]['types'][1]['type']['name'])}</div>
             `;
         }
     }
@@ -108,9 +120,19 @@ function renderPokemonCardColor(o) {
 
 function showPokemonInfo(o) {
     let pokemonInfo = document.getElementById('pokemon-info');
+    pokemonInfo.style.display = 'flex';
     document.getElementById('nav').style.display = 'none';
     document.body.style.overflow = 'hidden';
-    pokemonInfo.style.display = 'flex';
+
+    showPokemonInfoContent(o);
+    renderPokemonInfoCardType(o);
+    renderPokemonInfoCardColor(o);
+    openAbout(o);
+}
+
+
+function showPokemonInfoContent(o) {
+    let pokemonInfo = document.getElementById('pokemon-info');
 
     pokemonInfo.innerHTML = /* html */`
             <div onclick="dontClosePokemonInfo(event)" id="infoContent${o}" class="infoContent">
@@ -140,9 +162,6 @@ function showPokemonInfo(o) {
                 </div>
             </div>
         `;
-    renderPokemonInfoCardType(o);
-    renderPokemonInfoCardColor(o);
-    openAbout(o);
 }
 
 
@@ -178,6 +197,11 @@ function renderPokemonInfoCardColor(o) {
 function openAbout(o) {
     document.getElementById('about').classList.add('onclick');
     document.getElementById('stats').classList.remove('onclick');
+    openAboutContent(o);
+}
+
+
+function openAboutContent(o) {
     let categoryContent = document.getElementById('categoryContent');
 
     categoryContent.innerHTML = '';
@@ -205,7 +229,13 @@ function openStats(o) {
     categoryContent.innerHTML = '';
 
     for (let k = 0; k < allPokemon[o]['stats'].length; k++) {
-        categoryContent.innerHTML += /* html */`
+        showStatsContent(k, o);
+    }
+}
+
+
+function showStatsContent(k, o) {
+    categoryContent.innerHTML += /* html */`
             <div class="d-flex justify-content-center align-items-center mt-4">
                 <div class="w-124">${capitalizeFirstLetter(allPokemon[o]['stats'][k]['stat']['name'])}</div>
                 <div class="mx-3">${allPokemon[o]['stats'][k]['base_stat']}</div>
@@ -214,7 +244,6 @@ function openStats(o) {
                 </div>
             </div>
         `;
-    }
 }
 
 
@@ -258,10 +287,21 @@ function filterNames() {
     for (let l = 0; l < allPokemon.length; l++) {
         let pokemon = allPokemon[l];
         if (pokemon['name'].toLowerCase().includes(search)) {
-            pokemonCard.innerHTML += /* html */ `
+            showFilteredCard(l, pokemon);
+            renderPokemonInfoType(l);
+            renderPokemonSearchedCardColor(l);
+        }
+    }
+}
+
+
+function showFilteredCard(l, pokemon) {
+    let pokemonCard = document.getElementById('pokemon-cards');
+
+    pokemonCard.innerHTML += /* html */ `
                 <div id="cardContent${l}" class="cardContent" onclick="showPokemonInfo(${l})">
                     <div id="header">
-                        <h2>${pokemon['name']}</h2> 
+                        <h2>${capitalizeFirstLetter(pokemon['name'])}</h2> 
                         <b>#${pokemon['id']}</b>
                     </div>
                 
@@ -271,10 +311,6 @@ function filterNames() {
                     </div>
                 </div>
             `;
-            renderPokemonInfoType(l);
-            renderPokemonSearchedCardColor(l);
-        }
-    }
 }
 
 
@@ -284,12 +320,12 @@ function renderPokemonInfoType(l) {
     for (let m = 0; m < allPokemon[m]['types'].length; m++) {
         if (allPokemon[l]['types'][1] === undefined) {
             types.innerHTML = /* html */`
-                <div id="type${l}" class="type">${allPokemon[l]['types'][0]['type']['name']}</div>
+                <div id="type${l}" class="type">${capitalizeFirstLetter(allPokemon[l]['types'][0]['type']['name'])}</div>
             `;
         } else {
             types.innerHTML = /* html */`
-                <div id="type${l}" class="type">${allPokemon[l]['types'][0]['type']['name']}</div>
-                <div id="type${l}" class="type">${allPokemon[l]['types'][1]['type']['name']}</div>
+                <div id="type${l}" class="type">${capitalizeFirstLetter(allPokemon[l]['types'][0]['type']['name'])}</div>
+                <div id="type${l}" class="type">${capitalizeFirstLetter(allPokemon[l]['types'][1]['type']['name'])}</div>
             `;
         }
     }
